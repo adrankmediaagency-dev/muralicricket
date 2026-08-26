@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MURALI CRICKET ANALYST</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;700&family=Unbounded:wght@700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; width: 100%; overflow-x: hidden; overflow-y: auto; font-family: 'Familjen Grotesk', sans-serif; }
+
+    /* ── STADIUM BG with vivid gradient overlay ── */
+    body {
+      background: #050a05;
+      background-image:
+        /* vivid gradient overlay — new look */
+        linear-gradient(
+          135deg,
+          rgba(5,46,22,0.92) 0%,
+          rgba(2,20,10,0.75) 30%,
+          rgba(15,5,30,0.82) 65%,
+          rgba(5,10,5,0.95) 100%
+        ),
+        url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1600&q=80&fit=crop');
+      background-size: cover;
+      background-position: center 25%;
+      background-attachment: fixed;
+    }
+
+    /* Noise grain */
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .wrapper { position: relative; z-index: 10; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── TICKER ── */
+    .ticker { overflow: hidden; white-space: nowrap; flex-shrink: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(74,222,128,0.2); }
+    .roll { display: inline-block; animation: roll 22s linear infinite; }
+    @keyframes roll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── MAIN: full bleed stacked ── */
+    .main { flex: 1; display: flex; flex-direction: column; }
+
+    /* ── BLOCK A: Name hero — top left aligned ── */
+    .block-a {
+      padding: 32px 24px 0;
+      position: relative;
+    }
+
+    /* Vertical accent line */
+    .v-accent {
+      position: absolute; left: 0; top: 24px; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #4ade80, rgba(74,222,128,0.1));
+    }
+
+    .tag-label {
+      font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(74,222,128,0.45); margin-bottom: 12px; display: block;
+    }
+
+    .name-srinu {
+      font-family: 'Unbounded', sans-serif; font-weight: 900;
+      font-size: clamp(3.2rem, 17vw, 7rem);
+      color: #ffffff; line-height: 0.82;
+      letter-spacing: -0.02em;
+    }
+    .name-cricket {
+      font-family: 'Unbounded', sans-serif; font-weight: 700;
+      font-size: clamp(1rem, 5.5vw, 2.2rem);
+      color: #4ade80; line-height: 1;
+      letter-spacing: 0.1em; margin-top: 4px;
+    }
+
+    /* ── BLOCK B: gradient info card ── */
+    .block-b {
+      margin: 24px 20px 0;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(74,222,128,0.15);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(20px);
+    }
+
+    /* Card top — green gradient strip */
+    .card-top {
+      background: linear-gradient(90deg, rgba(74,222,128,0.12), rgba(74,222,128,0.04));
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(74,222,128,0.1);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-top-left { display: flex; flex-direction: column; gap: 1px; }
+    .card-top-label { font-size: 8px; color: rgba(74,222,128,0.5); letter-spacing: 0.2em; text-transform: uppercase; }
+    .card-top-val { font-family: 'Unbounded', sans-serif; font-size: 0.85rem; color: #fff; font-weight: 700; }
+
+    /* Avatar circle */
+    .avatar-c {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #4ade80);
+      padding: 2px; flex-shrink: 0;
+    }
+    .avatar-c-inner {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: #0a150a; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .avatar-c-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-initials { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 1.2rem; color: #4ade80; }
+
+    /* Card body */
+    .card-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* 4-cell mini grid */
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mini-cell {
+      background: rgba(74,222,128,0.05);
+      border: 1px solid rgba(74,222,128,0.12);
+      border-radius: 12px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mini-icon { font-size: 18px; flex-shrink: 0; }
+    .mini-title { font-size: 11px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .mini-sub { font-size: 9px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+
+    /* Accuracy row */
+    .acc-row { display: flex; flex-direction: column; gap: 6px; }
+    .acc-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(74,222,128,0.4); }
+    .acc-bar-item { display: flex; align-items: center; gap: 8px; }
+    .acc-name { font-size: 10px; color: rgba(255,255,255,0.3); width: 28px; flex-shrink: 0; font-weight: 500; }
+    .acc-track { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+    .acc-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #16a34a, #4ade80); }
+    .acc-pct { font-size: 10px; color: #4ade80; font-weight: 700; width: 30px; text-align: right; flex-shrink: 0; }
+
+    .b1{animation:b1 1.5s ease forwards 0.1s;width:0} @keyframes b1{to{width:92%}}
+    .b2{animation:b2 1.5s ease forwards 0.22s;width:0} @keyframes b2{to{width:87%}}
+    .b3{animation:b3 1.5s ease forwards 0.34s;width:0} @keyframes b3{to{width:83%}}
+
+    /* Subtext */
+    .subtext { font-size: 0.74rem; color: rgba(255,255,255,0.3); font-weight: 400; line-height: 1.65; }
+
+    /* ── BLOCK C: CTA ── */
+    .block-c { padding: 16px 20px 28px; display: flex; flex-direction: column; gap: 10px; }
+
+    .cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 52px;
+      background: #16a34a; color: #fff;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700; font-size: clamp(0.78rem,3.5vw,0.9rem);
+      letter-spacing: 0.06em;
+      border-radius: 14px; text-decoration: none;
+      position: relative; overflow: hidden;
+      box-shadow: 0 4px 28px rgba(22,163,74,0.4);
+      transition: transform .18s; -webkit-tap-highlight-color: transparent;
+    }
+    .cta svg { flex-shrink: 0; width: 18px; height: 18px; }
+    .cta::after {
+      content: ''; position: absolute; top:0; left:-100%; width:50%; height:100%;
+      background: linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+      transform: skewX(-18deg); animation: shine 3s ease-in-out infinite;
+    }
+    @keyframes shine { 0%,65%{left:-100%} 100%{left:160%} }
+    .cta:active { transform: scale(0.97); }
+
+    .meta { display: flex; align-items: center; justify-content: space-between; }
+    @keyframes ping { 75%,100%{transform:scale(2.2);opacity:0} }
+    .ping { animation: ping 1.3s cubic-bezier(0,0,.2,1) infinite; }
+
+    .footer-note { text-align: center; padding-bottom: 8px; }
+  </style>
+ </head>
+<body>
+
+  <div class="wrapper">
+
+    <!-- TICKER -->
+    <div class="ticker py-1.5">
+      <div class="roll" style="font-size:11px;font-weight:600;letter-spacing:0.16em;color:rgba(74,222,128,0.75);">
+        <span style="padding:0 16px;">🏏 MURALI CRICKET ANALYST •</span>
+        <span style="padding:0 16px;">IPL TIPS •</span>
+        <span style="padding:0 16px;">T20 PICKS •</span>
+        <span style="padding:0 16px;">MATCH PREDICTIONS •</span>
+        <span style="padding:0 16px;">FREE CHANNEL •</span>
+        <span style="padding:0 16px;">LIVE ALERTS •</span>
+        <span style="padding:0 16px;">ODI ANALYSIS •</span>
+        <span style="padding:0 16px;">🏏 MURALI CRICKET ANALYST •</span>
+        <span style="padding:0 16px;">IPL TIPS •</span>
+        <span style="padding:0 16px;">T20 PICKS •</span>
+        <span style="padding:0 16px;">MATCH PREDICTIONS •</span>
+        <span style="padding:0 16px;">FREE CHANNEL •</span>
+        <span style="padding:0 16px;">LIVE ALERTS •</span>
+        <span style="padding:0 16px;">ODI ANALYSIS •</span>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- BLOCK A: Name -->
+      <div class="block-a">
+        <div class="v-accent"></div>
+        <span class="tag-label" style="padding-left:16px;">Telegram Channel</span>
+        <div style="padding-left:16px;">
+          <div class="name-MURALI">MURALI</div>
+          <div class="name-CRICKET ANALYST">CRICKET ANALYST</div>
+        </div>
+      </div>
+
+      <!-- BLOCK B: Glass card -->
+      <div class="block-b">
+
+        <!-- Card top -->
+        <div class="card-top">
+          <div class="card-top-left">
+            <span class="card-top-label">Expert Analyst</span>
+            <span class="card-top-val">Srinu Cricket</span>
+          </div>
+          <div class="avatar-c">
+            <div class="avatar-c-inner">
+              <img src="profile.jpg" alt="Srinu Cricket"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/>
+              <div class="avatar-initials" style="display:none;">SC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card body -->
+        <div class="card-body">
+
+          <!-- 4 mini cells -->
+          <div class="mini-grid">
+            <div class="mini-cell">
+              <div class="mini-icon">🏏</div>
+              <div>
+                <div class="mini-title">Match Picks</div>
+                <div class="mini-sub">Daily tips</div>
+              </div>
+            </div>
+            <div class="mini-cell">
+              <div class="mini-icon">⚡</div>
+              <div>
+                <div class="mini-title">Live Alerts</div>
+                <div class="mini-sub">Instant</div>
+              </div>
+            </div>
+            <div class="mini-cell">
+              <div class="mini-icon">📊</div>
+              <div>
+                <div class="mini-title">Analysis</div>
+                <div class="mini-sub">Deep stats</div>
+              </div>
+            </div>
+            <div class="mini-cell">
+              <div class="mini-icon">🆓</div>
+              <div>
+                <div class="mini-title">Free</div>
+                <div class="mini-sub">No cost</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accuracy bars -->
+          <div class="acc-row">
+            <span class="acc-label">Accuracy</span>
+            <div class="acc-bar-item">
+              <span class="acc-name">IPL</span>
+              <div class="acc-track"><div class="b1 acc-fill"></div></div>
+              <span class="acc-pct">92%</span>
+            </div>
+            <div class="acc-bar-item">
+              <span class="acc-name">T20</span>
+              <div class="acc-track"><div class="b2 acc-fill"></div></div>
+              <span class="acc-pct">87%</span>
+            </div>
+            <div class="acc-bar-item">
+              <span class="acc-name">ODI</span>
+              <div class="acc-track"><div class="b3 acc-fill"></div></div>
+              <span class="acc-pct">83%</span>
+            </div>
+          </div>
+
+          <!-- Subtext -->
+          <p class="subtext">Expert cricket predictions — IPL, T20 &amp; ODI tips daily, straight to your Telegram. Free to join, no strings attached.</p>
+
+        </div>
+      </div>
+
+      <!-- BLOCK C: CTA -->
+      <div class="block-c">
+        <a href="https://telegram.me/+mraWzFEbfiphZDg1" target="_blank" class="cta">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+          JOIN FREE ON TELEGRAM
+        </a>
+
+        <div class="meta">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="position:relative;display:inline-flex;width:8px;height:8px;">
+              <span class="ping" style="position:absolute;inset:0;border-radius:50%;background:#4ade80;opacity:0.6;display:inline-flex;width:100%;height:100%;"></span>
+              <span style="position:relative;width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-flex;flex-shrink:0;"></span>
+            </span>
+            <span style="font-size:10px;color:rgba(255,255,255,0.25);">Members active now</span>
+          </div>
+          <p style="font-size:10px;color:rgba(255,255,255,0.15);">Free · Bet responsibly</p>
+        </div>
+
+        <div class="footer-note">
+          <p style="font-size:9px;color:rgba(255,255,255,0.12);">© 2026 Murali Cricket Analyst · Telegram Channel</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
